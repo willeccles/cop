@@ -1,4 +1,9 @@
-# cop - cactus option picker
+                               .----.-----.-----.
+                               |  __|  _  |  _  |
+                               |____|_____|   __|
+                                          |__|
+
+                           cop - cactus option picker
 
 cop is a small TUI program built around a library of the same name whose main
 goal is to allow you to easily display a list of options the user can
