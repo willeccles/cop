@@ -41,8 +41,8 @@ static int SetupTerm(void) {
          "\033[?7l"     // disable line wrapping
          "\033[?25l"    // hide cursor
          "\033[2J"      // clear screen
-         "\033[2;%dr",  // limit scrolling region
-         rows - 1);
+         "\033[1;%dr",  // limit scrolling region
+         rows);
 
   return 0;
 }
@@ -76,6 +76,23 @@ static int GetTermSize(void) {
 }
 
 static void SigHandler(int sig) {
+  switch (sig) {
+    case SIGWINCH:
+      GetTermSize();
+      // TODO redraw
+      break;
+    case SIGTERM:
+    case SIGINT:
+    case SIGQUIT:
+      ResetTerm();
+      exit(0);
+      break;
+    case SIGSEGV:
+    case SIGKILL:
+      ResetTerm();
+      exit(1);
+      break;
+  }
 }
 
 int main(int argc, char** argv) {
@@ -88,16 +105,22 @@ int main(int argc, char** argv) {
   }
 
   signal(SIGWINCH, SigHandler);
-  signal(SIGWINCH, SigHandler);
-  signal(SIGWINCH, SigHandler);
-  signal(SIGWINCH, SigHandler);
-  signal(SIGWINCH, SigHandler);
-  signal(SIGWINCH, SigHandler);
+  signal(SIGTERM, SigHandler);
+  signal(SIGINT, SigHandler);
+  signal(SIGQUIT, SigHandler);
+  signal(SIGKILL, SigHandler);
+  signal(SIGSEGV, SigHandler);
 
   atexit(ResetTerm);
 
-  SayHi();
+  struct cop_t cop;
+  cop.x = 0;
+  cop.y = 0;
+  cop.width = cols;
+  cop.height = rows;
 
+  while (1) {
+  }
 
   return 0;
 }
